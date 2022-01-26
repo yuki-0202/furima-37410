@@ -37,7 +37,7 @@
 - belongs_to :user
 - has_one :sale_record
 
-## sale_records
+## sale_records テーブル
 
 | Column              | Type        | Option                         |
 | ------------------- | ----------- | ------------------------------ |
@@ -50,7 +50,7 @@
 - belongs_to :item
 - has_one :destination
 
-## destinations
+## destinations テーブル
 
 | Column         | Type       | Option                         |
 | -------------- | ---------- | ------------------------------ |
