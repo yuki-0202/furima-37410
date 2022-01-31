@@ -16,16 +16,15 @@ class Item < ApplicationRecord
   end
 
   validates :price,
-    presence: { message: "Price can't be blank" },
-    numericality: {
-      only_integer: true,message: 'Price is invalid. Input half-width characters',
-      greater_than_or_equal_to: 300, message: 'Price is out of setting range',
-      less_than_or_equal_to: 9999999, message: 'Price is out of setting range'
-    }
+    presence: { message: "can't be blank" },
+    format: { with: /\A[0-9]+\z/, message: 'is invalid. Input half-width characters' },
+    numericality: {greater_than_or_equal_to: 300,less_than_or_equal_to: 9999999, message: 'is out of setting range'}
   
-  validates :category_id, numericality: { other_than: 1, message: "Category can't be blank" }
-  validates :status_id, numericality: { other_than: 1, message: "Sales status can't be blank"}
-  validates :shipping_fee_status_id, numericality: { other_than: 1, message: "Shipping fee status can't be blank"}
-  validates :prefecture_id, numericality: { other_than: 1, message: "Prefecture can't be blank"}
-  validates :scheduled_delivery_id, numericality: { other_than: 1, message: "Scheduled delivery can't be blank"}
+  with_options numericality: { other_than: 1, message: "can't be blank" } do
+    validates :category_id
+    validates :status_id
+    validates :shipping_fee_status_id
+    validates :prefecture_id
+    validates :scheduled_delivery_id
+  end
 end
