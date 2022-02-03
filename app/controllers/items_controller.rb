@@ -1,5 +1,5 @@
 class ItemsController < ApplicationController
-  before_action :authenticate_user!, only: [:new]
+  before_action :authenticate_user!, only: [:new, :edit]
   before_action :set_item, only: [:show, :edit, :update]
   before_action :move_to_index, only: [:edit]
 
@@ -55,10 +55,6 @@ class ItemsController < ApplicationController
   end
 
   def move_to_index
-    if user_signed_in?
-      redirect_to action: :index if current_user.id != @item.user_id || SaleRecord.where(item_id: @item).exists?
-    else
-      redirect_to new_user_session_path
-    end
+    redirect_to action: :index if current_user.id != @item.user_id || SaleRecord.where(item_id: @item).exists?
   end
 end
