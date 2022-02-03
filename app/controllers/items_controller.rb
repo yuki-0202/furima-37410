@@ -55,6 +55,6 @@ class ItemsController < ApplicationController
   end
 
   def move_to_index
-    redirect_to action: :index if current_user.id != @item.user_id || SaleRecord.where(item_id: @item).exists?
+    redirect_to action: :index if current_user.id != @item.user_id
   end
 end
