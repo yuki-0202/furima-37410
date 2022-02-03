@@ -55,7 +55,10 @@ class ItemsController < ApplicationController
   end
 
   def move_to_index
-    unless user_signed_in? && current_user.id == @item.user_id && SaleRecord.where(item_id: @item).blank?
+    unless user_signed_in?
+      redirect_to new_user_session_path
+    end
+    unless current_user.id == @item.user_id && SaleRecord.where(item_id: @item).blank?
       redirect_to action: :index
     end
   end
