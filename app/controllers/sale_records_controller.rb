@@ -1,6 +1,6 @@
 class SaleRecordsController < ApplicationController
   before_action :authenticate_user!, only: [:index]
-  before_action :set_item, only: [:index]
+  before_action :set_item, only: [:index, :create]
   before_action :move_to_index, only: [:index]
 
   def index
@@ -10,11 +10,12 @@ class SaleRecordsController < ApplicationController
 
   def create
     @sale_record_destination = SaleRecordDestination.new(sale_record_params)
+    @sale_record_destination.token = params[:token]
     if @sale_record_destination.valid?
+      pay_item
       @sale_record_destination.save
       redirect_to root_path
     else
-      @item = Item.find(params[:item_id])
       render :index
     end
   end
@@ -31,5 +32,14 @@ class SaleRecordsController < ApplicationController
 
   def move_to_index
     redirect_to root_path if SaleRecord.exists?(item_id: params[:item_id]) || @item.user_id == current_user.id
+  end
+
+  def pay_item
+    Payjp.api_key = ENV["PAYJP_SECRET_KEY"]
+      Payjp::Charge.create(
+        amount: @item.price,
+        card: @sale_record_destination.token,
+        currency: 'jpy'
+      )
   end
 end
