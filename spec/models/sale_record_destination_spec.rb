@@ -27,7 +27,9 @@ RSpec.describe SaleRecordDestination, type: :model do
       it 'postal_codeが半角のハイフンを含んだ正しい形式でないと保存できないこと' do
         @sale_record_destination.postal_code = '1234567'
         @sale_record_destination.valid?
-        expect(@sale_record_destination.errors.full_messages).to include('Postal code is invalid. Enter it as follows (e.g. 123-4567)')
+        expect(@sale_record_destination.errors.full_messages).to include(
+          'Postal code is invalid. Enter it as follows (e.g. 123-4567)'
+        )
       end
       it 'prefecture_idが空だと保存できないこと' do
         @sale_record_destination.prefecture_id = ''

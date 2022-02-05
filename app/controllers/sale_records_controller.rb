@@ -23,7 +23,9 @@ class SaleRecordsController < ApplicationController
   private
 
   def sale_record_params
-    params.require(:sale_record_destination).permit(:postal_code, :prefecture_id, :city, :address, :building, :phone_number).merge(user_id: current_user.id, item_id: params[:item_id].to_i)
+    params.require(:sale_record_destination)
+          .permit(:postal_code, :prefecture_id, :city, :address, :building, :phone_number)
+          .merge(user_id: current_user.id, item_id: params[:item_id].to_i)
   end
 
   def set_item
@@ -35,11 +37,11 @@ class SaleRecordsController < ApplicationController
   end
 
   def pay_item
-    Payjp.api_key = ENV["PAYJP_SECRET_KEY"]
-      Payjp::Charge.create(
-        amount: @item.price,
-        card: @sale_record_destination.token,
-        currency: 'jpy'
-      )
+    Payjp.api_key = ENV['PAYJP_SECRET_KEY']
+    Payjp::Charge.create(
+      amount: @item.price,
+      card: @sale_record_destination.token,
+      currency: 'jpy'
+    )
   end
 end
