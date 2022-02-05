@@ -9,7 +9,6 @@ class SaleRecordsController < ApplicationController
 
   def create
     @sale_record_destination = SaleRecordDestination.new(sale_record_params)
-    @sale_record_destination.token = params[:token]
     if @sale_record_destination.valid?
       pay_item
       @sale_record_destination.save
@@ -24,7 +23,7 @@ class SaleRecordsController < ApplicationController
   def sale_record_params
     params.require(:sale_record_destination)
           .permit(:postal_code, :prefecture_id, :city, :address, :building, :phone_number)
-          .merge(user_id: current_user.id, item_id: params[:item_id])
+          .merge(user_id: current_user.id, item_id: params[:item_id], token: params[:token])
   end
 
   def set_item
@@ -39,7 +38,7 @@ class SaleRecordsController < ApplicationController
     Payjp.api_key = ENV['PAYJP_SECRET_KEY']
     Payjp::Charge.create(
       amount: @item.price,
-      card: @sale_record_destination.token,
+      card: sale_record_params[:token],
       currency: 'jpy'
     )
   end
