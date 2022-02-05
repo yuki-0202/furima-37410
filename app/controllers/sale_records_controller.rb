@@ -4,7 +4,6 @@ class SaleRecordsController < ApplicationController
   before_action :move_to_index, only: [:index]
 
   def index
-    @sale_record = SaleRecord.new
     @sale_record_destination = SaleRecordDestination.new
   end
 
@@ -25,7 +24,7 @@ class SaleRecordsController < ApplicationController
   def sale_record_params
     params.require(:sale_record_destination)
           .permit(:postal_code, :prefecture_id, :city, :address, :building, :phone_number)
-          .merge(user_id: current_user.id, item_id: params[:item_id].to_i)
+          .merge(user_id: current_user.id, item_id: params[:item_id])
   end
 
   def set_item
