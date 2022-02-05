@@ -1,7 +1,10 @@
 class SaleRecordsController < ApplicationController
+  before_action :authenticate_user!, only: [:index]
+  before_action :set_item, only: [:index]
+  before_action :move_to_index, only: [:index]
+
   def index
     @sale_record = SaleRecord.new
-    @item = Item.find(params[:item_id])
     @sale_record_destination = SaleRecordDestination.new
   end
 
@@ -20,5 +23,13 @@ class SaleRecordsController < ApplicationController
 
   def sale_record_params
     params.require(:sale_record_destination).permit(:postal_code, :prefecture_id, :city, :address, :building, :phone_number).merge(user_id: current_user.id, item_id: params[:item_id].to_i)
+  end
+
+  def set_item
+    @item = Item.find(params[:item_id])
+  end
+
+  def move_to_index
+    redirect_to root_path if SaleRecord.exists?(item_id: params[:item_id]) || @item.user_id == current_user.id
   end
 end
