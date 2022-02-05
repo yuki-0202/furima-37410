@@ -4,7 +4,8 @@ RSpec.describe SaleRecordDestination, type: :model do
   describe '売却情報の保存' do
     before do
       item = FactoryBot.create(:item)
-      @sale_record_destination = FactoryBot.build(:sale_record_destination, user_id: item.user.id, item_id: item.id)
+      user = FactoryBot.create(:user)
+      @sale_record_destination = FactoryBot.build(:sale_record_destination, user_id: user.id, item_id: item.id)
       sleep(0.1)
     end
 
@@ -31,8 +32,8 @@ RSpec.describe SaleRecordDestination, type: :model do
           'Postal code is invalid. Enter it as follows (e.g. 123-4567)'
         )
       end
-      it 'prefecture_idが空だと保存できないこと' do
-        @sale_record_destination.prefecture_id = ''
+      it 'prefectureを選択していないと保存できないこと' do
+        @sale_record_destination.prefecture_id = '1'
         @sale_record_destination.valid?
         expect(@sale_record_destination.errors.full_messages).to include("Prefecture can't be blank")
       end
@@ -51,10 +52,20 @@ RSpec.describe SaleRecordDestination, type: :model do
         @sale_record_destination.valid?
         expect(@sale_record_destination.errors.full_messages).to include("Phone number can't be blank")
       end
-      it 'phone_numberが10桁未満だと保存できないこと' do
+      it 'phone_numberが9桁以下だと保存できないこと' do
         @sale_record_destination.phone_number = '090123456'
         @sale_record_destination.valid?
         expect(@sale_record_destination.errors.full_messages).to include('Phone number is too short')
+      end
+      it 'phone_numberが12桁以上だと保存できないこと' do
+        @sale_record_destination.phone_number = '090123456789'
+        @sale_record_destination.valid?
+        expect(@sale_record_destination.errors.full_messages).to include('Phone number is too long')
+      end
+      it 'phone_numberに半角数字以外が含まれている場合は購入できない' do
+        @sale_record_destination.phone_number = 'a090123456a'
+        @sale_record_destination.valid?
+        expect(@sale_record_destination.errors.full_messages).to include('Phone number  is invalid. Input only number')
       end
       it 'itemが紐付いていないと保存できないこと' do
         @sale_record_destination.item_id = ''
